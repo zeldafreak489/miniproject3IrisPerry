@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Your Inventory</h2>
+
+<a href="{{ url_for('inventory.add') }}">Add Item</a>
+
+<table border="1">
+    <tr>
+        <th>Name</th>
+        <th>Qty</th>
+        <th>Actions</th>
+    </tr>
+    {% for item in items %}
+    <tr>
+        <td>{{ item.name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>
+            <form action="{{ url_for('inventory.delete', id=item.id) }}" method="post" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
