@@ -3,66 +3,69 @@
 ### Mini Project 3
  
  
-# Project Title
+# Video Game Inventory
  
-Simple overview of use/purpose.
+A simple Flask app to manage a personal video game inventory. Users can register an account, log in, add/edit/delete items from their inventory, view item details, and change their password. The UI uses Bootstrapp and includes a confirmation modal for deletes.
  
 ## Description
  
-An in-depth paragraph about your project and overview of use.
+A small web app built with Flask and SQLite. Each user has a separate inventory (inventory items are linked to users via a foreign key). Templates use a shared base with Bootstrap styles. The project follows the Flask application factory and blueprint pattern.
  
 ## Getting Started
  
 ### Dependencies
  
-* Describe any prerequisites, libraries, OS version, etc., needed before installing program.
-* ex. Windows 10
-* List pip install instructions.
+* Python 3.11+
+* pip
+* The Python packages listed in requirements.txt:
+
+#### Install Python packages:
+
+Create virtual environment:
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
+
+Install Python packages:
+```bash
+pip install -r requirements.txt
+```
  
 ### Installing
  
-* How/where to download your program
-* Any modifications needed to be made to files/folders
+1. Ensure the repo is cloned.
+2. If templates are moved, ensure auth and inventory templates live under:
+    - app/templates/auth/
+    - app/templates/inventory/
  
 ### Executing program
  
-* How to run the program
-* Step-by-step bullets
+* First, you must initialize the data base:
+```bash
+flask init-db
 ```
-code blocks for commands
+
+* Next, start the dev server:
+```bash
+flask --app app run
 ```
- 
-## Help
- 
-Any advise for common problems or issues.
-```
-command to run if program contains helper info
-```
+
+* The server will automatically run at http://127.0.0.1:5000 on port 5000. Open this to view and use the application.
+
+* Register a new user with a username and password. After registering, you will be automatically redirected to the Log In page. Log in to view your inventory and profile.
  
 ## Authors
- 
-Contributors names and contact info
- 
-ex. Dominique Pizzie  
-ex. [@DomPizzie](https://twitter.com/dompizzie)
+
+Iris Perry
+[GitHub](https://github.com/zeldafreak489)
  
 ## Version History
  
-* 0.2
-    * Various bug fixes and optimizations
-    * See [commit change]() or See [release history]()
 * 0.1
     * Initial Release
  
-## License
- 
-This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
- 
 ## Acknowledgments
  
-Inspiration, code snippets, etc.
-* [awesome-readme](https://github.com/matiassingers/awesome-readme)
-* [PurpleBooth](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
-* [dbader](https://github.com/dbader/readme-template)
-* [zenorocha](https://gist.github.com/zenorocha/4526327)
-* [fvcproductions](https://gist.github.com/fvcproductions/1bfc2d4aecb01a834b46)
+* [Flask tutorial structure and patterns] (https://flask.palletsprojects.com/en/stable/tutorial/)
+* [Bootstrap documentation] (https://getbootstrap.com/docs/5.3/getting-started/introduction/)
