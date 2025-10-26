@@ -1,3 +1,7 @@
+# INF601 - Advanced Programming in Python
+# Iris Perry
+# Mini Project 3
+
 import functools
 
 from flask import (

@@ -1,3 +1,7 @@
+# INF601 - Advanced Programming in Python
+# Iris Perry
+# Mini Project 3
+
 from flask import Blueprint, render_template, request, redirect, url_for, session, g, abort
 import sqlite3
 

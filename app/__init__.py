@@ -1,3 +1,7 @@
+# INF601 - Advanced Programming in Python
+# Iris Perry
+# Mini Project 3
+
 import os
 
 from flask import Flask, redirect, url_for
