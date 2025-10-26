@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, redirect, url_for
 
 
 def create_app(test_config=None):
@@ -24,11 +24,6 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    # a simple page that says hello
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
-
     from . import db
     db.init_app(app)
 
@@ -37,6 +32,9 @@ def create_app(test_config=None):
 
     from . import inventory
     app.register_blueprint(inventory.bp)
-    app.add_url_rule('/', endpoint='index')
+
+    @app.route('/')
+    def home():
+        return redirect(url_for('inventory.index'))
 
     return app

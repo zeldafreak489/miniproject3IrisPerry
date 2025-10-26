@@ -1,26 +1,24 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% block title %}Inventory{% endblock %}
+
 {% block content %}
-<h2>Your Inventory</h2>
+<h1>Your Inventory</h1>
 
-<a href="{{ url_for('inventory.add') }}">Add Item</a>
+<a href="{{ url_for('inventory.add') }}">+ Add Item</a>
 
-<table border="1">
-    <tr>
-        <th>Name</th>
-        <th>Qty</th>
-        <th>Actions</th>
-    </tr>
+<ul>
     {% for item in items %}
-    <tr>
-        <td>{{ item.name }}</td>
-        <td>{{ item.quantity }}</td>
-        <td>
-            <form action="{{ url_for('inventory.delete', id=item.id) }}" method="post" style="display:inline;">
+        <li>
+            <a href="{{ url_for('inventory.details', item_id=item['id']) }}">
+                {{ item['name'] }} (x{{ item['quantity'] }})
+            </a>
+            <a href="{{ url_for('inventory.edit', item_id=item['id']) }}">Edit</a>
+            <form action="{{ url_for('inventory.delete', item_id=item['id']) }}" method="POST" style="display:inline;">
                 <button type="submit">Delete</button>
             </form>
-        </td>
-    </tr>
+        </li>
     {% endfor %}
-</table>
+</ul>
 
 {% endblock %}
+

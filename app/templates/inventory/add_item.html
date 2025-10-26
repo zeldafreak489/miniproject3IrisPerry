@@ -1,14 +1,17 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% block title %}Add Item{% endblock %}
+
 {% block content %}
-<h2>Add Inventory Item</h2>
+<h2>Add Item</h2>
 
-<form method="post">
-    <label>Item Name</label>
+<form method="POST">
+    <label>Name:</label>
     <input type="text" name="name" required>
-
-    <label>Quantity</label>
-    <input type="number" name="quantity" value="1" min="1" required>
-
-    <button type="submit">Save</button>
+    <label>Quantity:</label>
+    <input type="number" name="quantity" min="1" required>
+    <button type="submit">Add</button>
 </form>
+
+<a href="{{ url_for('inventory.index') }}">Back</a>
 {% endblock %}
+

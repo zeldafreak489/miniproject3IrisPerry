@@ -88,3 +88,9 @@ def login_required(view):
         return view(**kwargs)
 
     return wrapped_view
+
+@bp.route('/profile')
+def profile():
+    if g.user is None:
+        return redirect(url_for('auth.login'))
+    return render_template('profile.html')
