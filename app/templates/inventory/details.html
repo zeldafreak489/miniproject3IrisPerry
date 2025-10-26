@@ -1,11 +1,96 @@
 {% extends 'base.html' %}
 {% block title %}Item Details{% endblock %}
 
+{% block header %}
+<div class="d-flex justify-content-between align-items-center">
+  <h1 class="h3 mb-0">Item Details</h1>
+  <a href="{{ url_for('inventory.index') }}" class="btn btn-outline-secondary">Back to Inventory</a>
+</div>
+{% endblock %}
+
 {% block content %}
-<h2>{{ item['name'] }}</h2>
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h2 class="h5 mb-3">{{ item['name'] }}</h2>
 
-<p><strong>Quantity:</strong> {{ item['quantity'] }}</p>
+        <dl class="row mb-4">
+          <dt class="col-sm-4">Quantity</dt>
+          <dd class="col-sm-8">{{ item['quantity'] }}</dd>
+        </dl>
 
-<a href="{{ url_for('inventory.edit', item_id=item['id']) }}">Edit</a>
-<a href="{{ url_for('inventory.index') }}">Back to Inventory</a>
+        <div class="d-flex justify-content-end gap-2">
+          <a href="{{ url_for('inventory.edit', item_id=item['id']) }}" class="btn btn-primary">Edit</a>
+
+          <!-- Delete uses the same modal pattern as index -->
+          <button
+            type="button"
+            class="btn btn-danger delete-trigger"
+            data-action="{{ url_for('inventory.delete', item_id=item['id']) }}"
+            data-name="{{ item['name']|e }}"
+          >
+            Delete
+          </button>
+
+          <a href="{{ url_for('inventory.index') }}" class="btn btn-outline-secondary">Back</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation modal (single instance) -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmDeleteLabel">Confirm delete</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p id="confirmDeleteMessage" class="mb-0">Are you sure you want to delete this item?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+
+        <!-- Hidden form submitted when user confirms -->
+        <form id="confirmDeleteForm" method="post" style="display:inline;">
+          <button type="submit" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    // initialize when window load ensures bootstrap bundle is present
+    function initDeleteModal() {
+      if (typeof bootstrap === 'undefined') return;
+      const modalEl = document.getElementById('confirmDeleteModal');
+      if (!modalEl) return;
+      const bsModal = new bootstrap.Modal(modalEl);
+      const messageEl = document.getElementById('confirmDeleteMessage');
+      const formEl = document.getElementById('confirmDeleteForm');
+
+      document.addEventListener('click', function (e) {
+        const btn = e.target.closest && e.target.closest('.delete-trigger');
+        if (!btn) return;
+        const action = btn.getAttribute('data-action');
+        const name = btn.getAttribute('data-name') || 'this item';
+
+        messageEl.textContent = `Are you sure you want to delete "${name}"?`;
+        formEl.action = action;
+        bsModal.show();
+      });
+    }
+
+    if (document.readyState === 'complete') {
+      initDeleteModal();
+    } else {
+      window.addEventListener('load', initDeleteModal);
+    }
+  })();
+</script>
 {% endblock %}
