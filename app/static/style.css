@@ -1,0 +1,27 @@
+body {
+  background-color: #f8f9fa;
+  padding-bottom: 3rem;
+  color: #212529;
+}
+
+h1, h2, h3 {
+  margin-bottom: 0.5rem;
+}
+
+.container {
+  max-width: 960px;
+}
+
+.content {
+  margin-top: 1rem;
+}
+
+.alert {
+  margin-top: 0.5rem;
+}
+
+/* Optional: make tables more compact for inventory lists */
+.table-sm th,
+.table-sm td {
+  padding: 0.4rem 0.6rem;
+}

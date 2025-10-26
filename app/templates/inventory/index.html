@@ -1,24 +1,114 @@
 {% extends 'base.html' %}
 {% block title %}Inventory{% endblock %}
 
-{% block content %}
-<h1>Your Inventory</h1>
-
-<a href="{{ url_for('inventory.add') }}">+ Add Item</a>
-
-<ul>
-    {% for item in items %}
-        <li>
-            <a href="{{ url_for('inventory.details', item_id=item['id']) }}">
-                {{ item['name'] }} (x{{ item['quantity'] }})
-            </a>
-            <a href="{{ url_for('inventory.edit', item_id=item['id']) }}">Edit</a>
-            <form action="{{ url_for('inventory.delete', item_id=item['id']) }}" method="POST" style="display:inline;">
-                <button type="submit">Delete</button>
-            </form>
-        </li>
-    {% endfor %}
-</ul>
-
+{% block header %}
+<div class="d-flex justify-content-between align-items-center">
+  <h1 class="h3 mb-0">Your Inventory</h1>
+  <a href="{{ url_for('inventory.add') }}" class="btn btn-primary">+ Add Item</a>
+</div>
 {% endblock %}
 
+{% block content %}
+{% if not items %}
+  <div class="alert alert-secondary" role="alert">
+    You don't have any items yet. Use <a href="{{ url_for('inventory.add') }}" class="alert-link">Add Item</a> to create one.
+  </div>
+{% else %}
+  <div class="table-responsive">
+    <table class="table table-striped table-sm align-middle">
+      <thead class="table-light">
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col" class="text-center">Quantity</th>
+          <th scope="col" class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>
+            <a class="text-decoration-none" href="{{ url_for('inventory.details', item_id=item['id']) }}">
+              {{ item['name'] }}
+            </a>
+          </td>
+          <td class="text-center">
+            <span class="badge bg-secondary">x{{ item['quantity'] }}</span>
+          </td>
+          <td class="text-end">
+            <a href="{{ url_for('inventory.edit', item_id=item['id']) }}" class="btn btn-outline-secondary btn-sm">Edit</a>
+
+            <!-- Delete button triggers modal; action stored in data-action -->
+            <button
+              type="button"
+              class="btn btn-danger btn-sm ms-2 delete-trigger"
+              data-action="{{ url_for('inventory.delete', item_id=item['id']) }}"
+              data-name="{{ item['name']|e }}"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Confirmation modal -->
+  <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="confirmDeleteLabel">Confirm delete</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p id="confirmDeleteMessage" class="mb-0">Are you sure you want to delete this item?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+
+          <!-- Hidden form submitted when user confirms -->
+          <form id="confirmDeleteForm" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Initialize after all scripts (including Bootstrap) have loaded.
+      function initDeleteModal() {
+        if (typeof bootstrap === 'undefined') {
+          // Bootstrap still not available; nothing to do.
+          return;
+        }
+        const modalEl = document.getElementById('confirmDeleteModal');
+        if (!modalEl) return;
+        const bsModal = new bootstrap.Modal(modalEl);
+        const messageEl = document.getElementById('confirmDeleteMessage');
+        const formEl = document.getElementById('confirmDeleteForm');
+
+        document.addEventListener('click', function (e) {
+          const btn = e.target.closest && e.target.closest('.delete-trigger');
+          if (!btn) return;
+          const action = btn.getAttribute('data-action');
+          const name = btn.getAttribute('data-name') || 'this item';
+
+          messageEl.textContent = `Are you sure you want to delete "${name}"?`;
+          formEl.action = action;
+
+          bsModal.show();
+        });
+      }
+
+      if (document.readyState === 'complete') {
+        initDeleteModal();
+      } else {
+        window.addEventListener('load', initDeleteModal);
+      }
+    })();
+  </script>
+{% endif %}
+{% endblock %}
