@@ -93,4 +93,39 @@ def login_required(view):
 def profile():
     if g.user is None:
         return redirect(url_for('auth.login'))
-    return render_template('profile.html')
+    return render_template('auth/profile.html')
+
+@bp.route('/change-password', methods=('GET', 'POST'))
+@login_required
+def change_password():
+    if request.method == 'POST':
+        current = request.form.get('current_password')
+        new = request.form.get('new_password')
+        confirm = request.form.get('confirm_password')
+        error = None
+
+        if not current:
+            error = 'Current password is required.'
+        elif not new:
+            error = 'New password is required.'
+        elif new != confirm:
+            error = 'New passwords do not match.'
+        else:
+            db = get_db()
+            user = db.execute('SELECT * FROM user WHERE id = ?', (g.user['id'],)).fetchone()
+            if user is None or not check_password_hash(user['password'], current):
+                error = 'Current password is incorrect.'
+
+        if error is None:
+            db.execute(
+                'UPDATE user SET password = ? WHERE id = ?',
+                (generate_password_hash(new), g.user['id'])
+            )
+            db.commit()
+            flash('Password changed successfully.')
+            return redirect(url_for('auth.profile'))
+
+        flash(error)
+
+    # For GET or after flashing an error, show profile page (profile route will render template)
+    return redirect(url_for('auth.profile'))
